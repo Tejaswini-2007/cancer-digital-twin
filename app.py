@@ -146,11 +146,16 @@ input_df = pd.DataFrame([{
 }])
 
 
-# ---------------- ENCODE ---------------- #
 
-cat_cols = input_df.select_dtypes(include="object").columns.tolist()
+# ---------------- ENCODE (FIXED) ---------------- #
 
-input_df[cat_cols] = encoder.transform(input_df[cat_cols])
+encoder_cols = list(encoder.feature_names_in_)
+
+for col in encoder_cols:
+    if col not in input_df.columns:
+        input_df[col] = "Unknown"
+
+input_df[encoder_cols] = encoder.transform(input_df[encoder_cols])
 
 
 # ---------------- ALIGN FEATURES ---------------- #
@@ -194,4 +199,5 @@ if st.button("🔮 Predict Outcome"):
 
     else:
         st.error("🔴 High Recurrence Risk")
+
 
